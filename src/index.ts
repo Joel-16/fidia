@@ -20,6 +20,7 @@ import { VerificationResolver } from "./resolvers/verification.resolver"
       resolvers: [RegisterResolver, LoginResolver, VerificationResolver],
       validate: true
     }),
+    introspection : true,
     plugins : [ApolloServerPluginLandingPageGraphQLPlayground()],
     context: ({ req, res }) => ({ req, res })
   });

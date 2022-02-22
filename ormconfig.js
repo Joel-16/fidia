@@ -2,7 +2,7 @@ module.exports = [
   {
     name: "development",
     type: "mongodb",
-    url: "mongodb://localhost/fidia",
+    url: "mongodb+srv://joel:joel@cluster0.fyzt4.mongodb.net/fidia?retryWrites=true&w=majority",
     synchronize: true,
     logging: true,
     useUnifiedTopology: true,

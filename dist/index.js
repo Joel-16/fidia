@@ -29,6 +29,7 @@ const verification_resolver_1 = require("./resolvers/verification.resolver");
             resolvers: [Registration_resolver_1.RegisterResolver, Registration_resolver_1.LoginResolver, verification_resolver_1.VerificationResolver],
             validate: true
         }),
+        introspection: true,
         plugins: [(0, apollo_server_core_1.ApolloServerPluginLandingPageGraphQLPlayground)()],
         context: ({ req, res }) => ({ req, res })
     });

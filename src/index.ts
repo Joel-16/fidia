@@ -8,8 +8,7 @@ import {RegisterResolver, LoginResolver } from "./resolvers/Registration.resolve
 import { VerificationResolver } from "./resolvers/verification.resolver"
 
 (async () => {
-  const app = express();
-
+  const app = express()
   const options = await getConnectionOptions(
     process.env.NODE_ENV || "development"
   );

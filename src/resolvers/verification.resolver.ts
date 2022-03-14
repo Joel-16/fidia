@@ -6,13 +6,15 @@ import { User } from "../entity/User";
 export class VerificationResolver {
    @Mutation(() => String)
    async verify(@Arg('token') token: string): Promise<string> {
-      let decoded = verify(token, `${process.env.JWT}`)
+      let decoded :any
+      try{
+         decoded = verify(token, `${process.env.JWT}`)
+      }catch (err){
+         throw new Error('Your token is expireed')
+      }
       if (typeof decoded != "string"){
-         let user : any
          try{
-            user = await User.findOne({where : {email : decoded.email}})            
-            user.confirmed= true
-            await user.save()
+            await User.update({id : decoded.id}, {confirmed: true})            
          } catch (e){
             throw new Error("account doesn't exist")
          }

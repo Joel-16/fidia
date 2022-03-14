@@ -1,10 +1,11 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { genSaltSync, hashSync, compareSync } from "bcryptjs"
+import { UserInputError } from "apollo-server-express";
 import { sign } from 'jsonwebtoken'
 import { User } from "../entity/User";
 import { LoginInput, RegisterInput } from "../inputTypes/register.input"
-import { UserInputError } from "apollo-server-express";
 import { loginReturn } from "../returnTypes/loginReturn";
+import { sendmail } from "../utils/sendMail";
 
 @Resolver()
 export class RegisterResolver {
@@ -21,17 +22,19 @@ export class RegisterResolver {
             email: email,
             password: password,
             name: name,
-            confirmed : false
+            confirmed: false
          })
-
-         return await user.save()
-      }
+         await user.save()
+         await sendmail(user.email,sign({id: user.id}, `${process.env.JWT}`, { expiresIn: 900000 }) )
+      return user
    }
+}
 
-   @Query(() => [User])
-   async allUsers() {
-      return await User.find({})
-   }
+
+@Query(() => [User])
+async allUsers() {
+   return await User.find({})
+}
 }
 
 @Resolver()
@@ -47,11 +50,11 @@ export class LoginResolver {
       if (!compareSync(password, user.password)) {
          throw new UserInputError("Password is incorrect")
       }
-      // if (!user.confirmed) {
-      //    throw new Error("Please Verify your email address")
-      // }
+      if (!user.confirmed) {
+         throw new Error("Please Verify your email address")
+      }
       let token = { id: user.id, email: user.email }
-      return { token: sign(token, `${process.env.JWT}`, {expiresIn : '1h'}), user: user }
+      return { token: sign(token, `${process.env.JWT}`, { expiresIn: '1h' }), user: user }
 
    }
 
